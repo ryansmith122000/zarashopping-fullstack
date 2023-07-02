@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "c4PmsUnFaqsH9vvHPFo0mMoglH1dbX4q3rsDGOCBN9zkClrvZTawP7xSjlfZM+j9Am8VD7kMEm7BuMtdfbUdzg==",
+  "dgSpecHash": "83HReN1nrBIFvcEt6cD7v4Q6eHPTlZ+OUOv2hiJIzCQ8bP+Km56J56WpRYHq/95A0kXwpIQA47aACm2WGu7Rvg==",
   "success": true,
-  "projectFilePath": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\TestToSQL\\ZaraShopping.csproj",
+  "projectFilePath": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\zara-shopping-dotnet\\ZaraShopping.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ryans\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\ryans\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

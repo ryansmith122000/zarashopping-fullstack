@@ -7,6 +7,7 @@ using TestToSQL.Interfaces;
 using TestToSQL.Models;
 using TestToSQL.Responses;
 using TestToSQL.Utilities;
+using TestToSQL.Services;
 
 namespace TestToSQL.Controllers
 {
@@ -66,7 +67,39 @@ namespace TestToSQL.Controllers
 
             return result;
         }
-
         #endregion
-    }
-}
+
+        #region - Get All Not OK -
+
+        [HttpGet("")]
+        public ActionResult<ItemResponse<Users>> GetAll()
+        {
+            int iCode = 200;
+            BaseResponse response = null;
+
+            try
+            {
+                List<Users> list = _service.GetAll();
+
+                if (list == null)
+                {
+                    iCode = 404;
+                    response = new ErrorResponse("User(s) Not Found.");
+                }
+                else
+                {
+                    response = new ItemsResponse<Users> { Items = list };
+                }
+            }
+            catch (Exception ex)
+            {
+                iCode = 500;
+                base.Logger.LogError(ex.ToString());
+                response = new ErrorResponse($"Generic Error: {ex.Message}");
+            }
+            return StatusCode(iCode, response);
+
+        }
+        #endregion
+    } // end of controller, don't put anything here.
+} // end of namespace, don't put anything here.

@@ -1,9 +1,10 @@
 ﻿using TestToSQL.Dtos;
 
-namespace TestToSQL.Interfaces
+namespace TestToSQL.Services
 {
     public interface IUsersService
     {
         int CreateUser(UserAddRequest model);
+        List<Users> GetAll();
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\TestToSQL\\ZaraShopping.csproj": {}
+    "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\zara-shopping-dotnet\\ZaraShopping.csproj": {}
   },
   "projects": {
-    "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\TestToSQL\\ZaraShopping.csproj": {
+    "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\zara-shopping-dotnet\\ZaraShopping.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\TestToSQL\\ZaraShopping.csproj",
+        "projectUniqueName": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\zara-shopping-dotnet\\ZaraShopping.csproj",
         "projectName": "ZaraShopping",
-        "projectPath": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\TestToSQL\\ZaraShopping.csproj",
+        "projectPath": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\zara-shopping-dotnet\\ZaraShopping.csproj",
         "packagesPath": "C:\\Users\\ryans\\.nuget\\packages\\",
-        "outputPath": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\TestToSQL\\obj\\",
+        "outputPath": "C:\\SF.Code\\Projects\\full-stack-projects\\zara-shopping\\backend\\dotnet\\zara-shopping-dotnet\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ryans\\AppData\\Roaming\\NuGet\\NuGet.Config",
