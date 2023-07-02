@@ -5,11 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using TestToSQL.Data;
-using TestToSQL.Interfaces;
-using TestToSQL.Services;
+using ZaraShopping.Data;
+using ZaraShopping.Interfaces;
+using ZaraShopping.Services;
 
-namespace TestToSQL
+namespace ZaraShopping
 {
     public class Startup
     {

@@ -1,26 +1,10 @@
-﻿using Azure;
-using Humanizer;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Identity.Client.Extensions.Msal;
-using NuGet.Common;
-using System.Buffers.Text;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Principal;
-using System.Threading;
-using TestToSQL.Dtos;
-using TestToSQL.Interfaces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using TestToSQL.Models;
-using System.IO.Pipelines;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using TestToSQL.Services;
+using ZaraShopping.Dtos;
+using ZaraShopping.Interfaces;
+using ZaraShopping.Responses;
 
-namespace TestToSQL.Services
+namespace ZaraShopping.Services
 {
     public class UsersService : IUsersService
     {
@@ -30,6 +14,8 @@ namespace TestToSQL.Services
         {
             this.connectionString = connectionString; // assigns the connectionString parameter to the readonly field
         }
+
+
         #region - Add OK -
         public int CreateUser(UserAddRequest model)
         {
@@ -52,6 +38,7 @@ namespace TestToSQL.Services
         }
         #endregion
 
+        #region - Get All OK -
         public List<Users> GetAll()
         {
             using SqlConnection sqlConnection = new(connectionString);
@@ -71,86 +58,82 @@ namespace TestToSQL.Services
             }
             return list;
         }
+        #endregion
+
+        #region - Get By Id OK -
+
+        public ItemResponse<Users> GetById(int id)
+        {
+            using SqlConnection sqlConnection = new(connectionString);
+            sqlConnection.Open();
+            using SqlCommand command = sqlConnection.CreateCommand();
+
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "[dbo].[Users_SelectById]";
+            command.Parameters.AddWithValue("@Id", id);
+
+            using SqlDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                Users user = MapSingleUser(reader);
+                return new ItemResponse<Users>
+                {
+                    Item = user
+                };
+            }
+            else
+            {
+                return new ItemResponse<Users>
+                { IsSuccessful = false };
+
+            }
+        }
+
+
+
+        #endregion
 
         #region - Map For Get - OK - 
         private static Users MapSingleUser(IDataReader reader)
         {
             Users aUser = new Users();
-            Address userAddress = new Address();
 
             int startingIndex = 0;
 
-            if (!reader.IsDBNull(startingIndex))
-                aUser.Id = reader.GetInt32(startingIndex++);
+            aUser.Id = reader.IsDBNull(startingIndex) ? 0 : reader.GetInt32(startingIndex++);
+            aUser.Name = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.Email = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.Password = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.ProfilePicture = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.Gender = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.RoleName = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
 
+            // Check for null value before assigning to IsDeleted
             if (!reader.IsDBNull(startingIndex))
-                aUser.Name = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                aUser.Email = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                aUser.Password = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                aUser.ProfilePicture = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                aUser.DateOfBirth = reader.GetDateTime(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                aUser.Gender = reader.GetString(startingIndex++);
-
-            // Set address fields
-            if (!reader.IsDBNull(startingIndex))
-                userAddress.Street = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                userAddress.LineTwo = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                userAddress.City = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                userAddress.State = reader.GetString(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                userAddress.ZipCode = reader.GetInt32(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                userAddress.Country = reader.GetString(startingIndex++);
-
-            // Assign the address directly to the Users object without including the address.id field
-            aUser.Address = new Address
             {
-                Street = userAddress.Street,
-                LineTwo = userAddress.LineTwo,
-                City = userAddress.City,
-                State = userAddress.State,
-                ZipCode = userAddress.ZipCode,
-                Country = userAddress.Country
-            };
+                aUser.IsDeleted = reader.GetBoolean(startingIndex);
+            }
+            startingIndex++; // Move to the next index
 
-            if (!reader.IsDBNull(startingIndex))
-                aUser.RoleName = reader.GetString(startingIndex++);
+            aUser.Street = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.LineTwo = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.City = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.State = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.ZipCode = reader.IsDBNull(startingIndex) ? 0 : reader.GetInt32(startingIndex++);
+            aUser.Country = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
+            aUser.DateOfBirth = reader.IsDBNull(startingIndex) ? DateTime.MinValue : reader.GetDateTime(startingIndex++);
 
-            if (!reader.IsDBNull(startingIndex))
-                aUser.CreatedBy = reader.GetInt32(startingIndex++);
 
-            if (!reader.IsDBNull(startingIndex))
-                aUser.ModifiedBy = reader.GetInt32(startingIndex++);
 
-            if (!reader.IsDBNull(startingIndex))
-                aUser.DateCreated = reader.GetDateTime(startingIndex++);
 
-            if (!reader.IsDBNull(startingIndex))
-                aUser.DateModified = reader.GetDateTime(startingIndex++);
-
-            if (!reader.IsDBNull(startingIndex))
-                aUser.IsDeleted = reader.GetBoolean(startingIndex++);
 
             return aUser;
         }
+
+
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace TestToSQL.Utilities
+namespace ZaraShopping.Utilities
 {
     public class DateFormatValidator
     {

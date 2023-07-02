@@ -1,9 +1,9 @@
-global using TestToSQL.Models;
+global using ZaraShopping.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 
-namespace TestToSQL
+namespace ZaraShopping
 {
     public class Program
     {

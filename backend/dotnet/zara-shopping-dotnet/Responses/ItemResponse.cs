@@ -1,6 +1,6 @@
-﻿using TestToSQL.Interfaces;
+﻿using ZaraShopping.Interfaces;
 
-namespace TestToSQL.Responses
+namespace ZaraShopping.Responses
 {
     public class ItemResponse<T> : SuccessResponse, IItemResponse
     {

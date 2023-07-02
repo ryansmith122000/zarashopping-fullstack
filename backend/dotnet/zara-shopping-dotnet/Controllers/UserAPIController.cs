@@ -1,15 +1,10 @@
-﻿using BCrypt.Net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using TestToSQL.Dtos;
-using TestToSQL.Interfaces;
-using TestToSQL.Models;
-using TestToSQL.Responses;
-using TestToSQL.Utilities;
-using TestToSQL.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using ZaraShopping.Dtos;
+using ZaraShopping.Interfaces;
+using ZaraShopping.Responses;
+using ZaraShopping.Utilities;
 
-namespace TestToSQL.Controllers
+namespace ZaraShopping.Controllers
 {
     [Route("api/users")]
     [ApiController]
@@ -69,9 +64,9 @@ namespace TestToSQL.Controllers
         }
         #endregion
 
-        #region - Get All Not OK -
+        #region - Get All OK -
 
-        [HttpGet("")]
+        [HttpGet("all")]
         public ActionResult<ItemResponse<Users>> GetAll()
         {
             int iCode = 200;
@@ -101,5 +96,39 @@ namespace TestToSQL.Controllers
 
         }
         #endregion
+
+        #region - Get By Id Not OK -
+
+        [HttpGet("{id:int}")]
+
+        public ActionResult<ItemResponse<Users>> GetById(int id)
+        {
+            int iCode = 200;
+            BaseResponse response = null;
+
+            try
+            {
+                ItemResponse<Users> itemResponse = _service.GetById(id);
+                if (itemResponse.Item == null)
+                {
+                    iCode = 404;
+                    response = new ErrorResponse($"User(s) with the existing Id of {id} Not Found.");
+
+                }
+                else
+                {
+                    response = itemResponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                iCode = 500;
+                base.Logger.LogError(ex.ToString());
+                response = new ErrorResponse($"Generic Error: {ex.Message}");
+            }
+            return StatusCode(iCode, response);
+        }
+        #endregion
+
     } // end of controller, don't put anything here.
 } // end of namespace, don't put anything here.

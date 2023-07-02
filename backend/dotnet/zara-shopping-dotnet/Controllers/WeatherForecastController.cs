@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace TestToSQL.Controllers
+namespace ZaraShopping.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/weatherforecast")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

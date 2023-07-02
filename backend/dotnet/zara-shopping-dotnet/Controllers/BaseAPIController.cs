@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using TestToSQL.Interfaces;
-using TestToSQL.Responses;
+using ZaraShopping.Interfaces;
+using ZaraShopping.Responses;
 
-namespace TestToSQL.Controllers
+namespace ZaraShopping.Controllers
 {
     [ApiController]
     public class BaseAPIController : ControllerBase

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace TestToSQL.Utilities
+namespace ZaraShopping.Utilities
 {
     public static class PasswordHasher
     {

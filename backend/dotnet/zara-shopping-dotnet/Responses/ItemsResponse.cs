@@ -1,4 +1,4 @@
-﻿namespace TestToSQL.Responses
+﻿namespace ZaraShopping.Responses
 {
     public class ItemsResponse<T> : SuccessResponse
     {

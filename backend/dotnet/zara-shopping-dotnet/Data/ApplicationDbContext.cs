@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TestToSQL.Models;
 
-namespace TestToSQL.Data
+namespace ZaraShopping.Data
 {
     public class ApplicationDbContext : DbContext
     {

@@ -1,4 +1,4 @@
-﻿namespace TestToSQL.Models
+﻿namespace ZaraShopping.Models
 {
     public class Address
     {

@@ -1,4 +1,4 @@
-﻿namespace TestToSQL.Interfaces
+﻿namespace ZaraShopping.Interfaces
 {
     public interface IItemResponse
     {

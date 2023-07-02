@@ -1,4 +1,4 @@
-namespace TestToSQL
+namespace ZaraShopping
 {
     public class WeatherForecast
     {
