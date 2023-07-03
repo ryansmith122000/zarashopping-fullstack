@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Data;
 using ZaraShopping.Dtos;
 using ZaraShopping.Interfaces;
@@ -15,6 +16,32 @@ namespace ZaraShopping.Services
             this.connectionString = connectionString; // assigns the connectionString parameter to the readonly field
         }
 
+
+        #region - Update Not OK -
+        public void UpdateUser(UserUpdateRequest model)
+        {
+            using SqlConnection sqlConnection = new SqlConnection(connectionString);
+            sqlConnection.Open();
+
+            using SqlCommand command = sqlConnection.CreateCommand();
+
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "[dbo].[Users_Update]";
+
+            UpdateCommonParams(model, command.Parameters);
+
+/*            SqlParameter idParameter = new SqlParameter("@Id", SqlDbType.Int);
+
+            idParameter.Value = model.Id;*/
+            command.Parameters.AddWithValue("@Id", model.Id);
+
+
+            command.ExecuteNonQuery();
+
+            sqlConnection.Close();
+        }
+
+        #endregion
 
         #region - Add OK -
         public int CreateUser(UserAddRequest model)
@@ -85,10 +112,27 @@ namespace ZaraShopping.Services
             {
                 return new ItemResponse<Users>
                 { IsSuccessful = false };
-
             }
         }
+        #endregion
 
+
+
+        #region - Delete Not OK -
+
+        public void Delete(int id)
+        {
+            using SqlConnection sqlConnection = new SqlConnection(connectionString);
+            sqlConnection.Open();
+            using SqlCommand command = sqlConnection.CreateCommand();
+
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "[dbo].[Users_Delete]";
+
+            command.Parameters.AddWithValue("@Id", id);
+
+            command.ExecuteNonQuery();
+        }
 
 
         #endregion
@@ -158,6 +202,22 @@ namespace ZaraShopping.Services
             col.AddWithValue("@CreatedBy", model.CreatedBy);
         }
         #endregion
+
+        private static void UpdateCommonParams(UserUpdateRequest model, SqlParameterCollection col)
+        {
+            col.AddWithValue("@Name", model.Name);
+            col.AddWithValue("@Email", model.Email);
+            col.AddWithValue("@Password", model.Password);
+            col.AddWithValue("@ProfilePicture", model.ProfilePicture);
+            col.AddWithValue("@DateOfBirth", model.DateOfBirth); // this needs to be filled with a certain format or else SQL goes nuts
+            col.AddWithValue("@Gender", model.Gender);
+            col.AddWithValue("@Street", model.Street);
+            col.AddWithValue("@LineTwo", model.LineTwo);
+            col.AddWithValue("@City", model.City);
+            col.AddWithValue("@State", model.State);
+            col.AddWithValue("@ZipCode", model.ZipCode);
+            col.AddWithValue("@Country", model.Country);
+        }
     }
 
     /*    To implement a login functionality in C#, you can follow these general steps:

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using ZaraShopping.Dtos;
 using ZaraShopping.Interfaces;
 using ZaraShopping.Responses;
@@ -18,6 +19,36 @@ namespace ZaraShopping.Controllers
             _service = service;
             _logger = logger;
         }
+
+        #region - Update Not OK -
+        [HttpPut]
+        public ActionResult<SuccessResponse> Update(UserUpdateRequest model)
+        {
+            int code = 200;
+            BaseResponse response = null;
+
+            try
+            {
+
+                string salt = BCrypt.Net.BCrypt.GenerateSalt();
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
+                model.Password = hashedPassword;
+
+                _service.UpdateUser(model);
+
+                response = new SuccessResponse();
+            }
+
+            catch (Exception ex)
+            {
+                code = 500;
+                response = new ErrorResponse(ex.Message);
+            }
+
+            return StatusCode(code, response);
+        }
+
+        #endregion
 
         #region - Post OK -
 
@@ -61,6 +92,28 @@ namespace ZaraShopping.Controllers
             }
 
             return result;
+        }
+        #endregion
+
+        #region - Delete OK -
+        [HttpDelete("{id:int}")]
+        public ActionResult<SuccessResponse> DeleteById(int id)
+        {
+            int code = 200;
+            BaseResponse response = null;
+
+            try
+            {
+                _service.Delete(id);
+
+                response = new SuccessResponse();
+            }
+            catch (Exception ex)
+            {
+                code = 500;
+                response = new ErrorResponse(ex.Message);
+            }
+            return StatusCode(code, response);
         }
         #endregion
 
