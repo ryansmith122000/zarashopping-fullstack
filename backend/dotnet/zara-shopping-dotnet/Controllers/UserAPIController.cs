@@ -20,39 +20,8 @@ namespace ZaraShopping.Controllers
             _logger = logger;
         }
 
-        #region - Update Not OK -
-        [HttpPut]
-        public ActionResult<SuccessResponse> Update(UserUpdateRequest model)
-        {
-            int code = 200;
-            BaseResponse response = null;
-
-            try
-            {
-
-                string salt = BCrypt.Net.BCrypt.GenerateSalt();
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
-                model.Password = hashedPassword;
-
-                _service.UpdateUser(model);
-
-                response = new SuccessResponse();
-            }
-
-            catch (Exception ex)
-            {
-                code = 500;
-                response = new ErrorResponse(ex.Message);
-            }
-
-            return StatusCode(code, response);
-        }
-
-        #endregion
-
         #region - Post OK -
-
-        [HttpPost]
+        [HttpPost("add")]
         public ActionResult<ItemResponse<int>> CreateUser(UserAddRequest model)
         {
             ActionResult<ItemResponse<int>> result = null;
@@ -95,31 +64,8 @@ namespace ZaraShopping.Controllers
         }
         #endregion
 
-        #region - Delete OK -
-        [HttpDelete("{id:int}")]
-        public ActionResult<SuccessResponse> DeleteById(int id)
-        {
-            int code = 200;
-            BaseResponse response = null;
-
-            try
-            {
-                _service.Delete(id);
-
-                response = new SuccessResponse();
-            }
-            catch (Exception ex)
-            {
-                code = 500;
-                response = new ErrorResponse(ex.Message);
-            }
-            return StatusCode(code, response);
-        }
-        #endregion
-
         #region - Get All OK -
-
-        [HttpGet("all")]
+        [HttpGet("getall")]
         public ActionResult<ItemResponse<Users>> GetAll()
         {
             int iCode = 200;
@@ -150,9 +96,8 @@ namespace ZaraShopping.Controllers
         }
         #endregion
 
-        #region - Get By Id Not OK -
-
-        [HttpGet("{id:int}")]
+        #region - Get By Id OK -
+        [HttpGet("getbyid/{id:int}")]
 
         public ActionResult<ItemResponse<Users>> GetById(int id)
         {
@@ -182,6 +127,59 @@ namespace ZaraShopping.Controllers
             return StatusCode(iCode, response);
         }
         #endregion
+
+        #region - Update OK -
+        [HttpPut("update")]
+        public ActionResult<SuccessResponse> Update(UserUpdateRequest model)
+        {
+            int code = 200;
+            BaseResponse response = null;
+
+            try
+            {
+
+                string salt = BCrypt.Net.BCrypt.GenerateSalt();
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
+                model.Password = hashedPassword;
+
+                _service.UpdateUser(model);
+
+                response = new SuccessResponse();
+            }
+
+            catch (Exception ex)
+            {
+                code = 500;
+                response = new ErrorResponse(ex.Message);
+            }
+
+            return StatusCode(code, response);
+        }
+
+        #endregion
+
+        #region - Delete OK -
+        [HttpDelete("delete/{id:int}")]
+        public ActionResult<SuccessResponse> DeleteById(int id)
+        {
+            int code = 200;
+            BaseResponse response = null;
+
+            try
+            {
+                _service.Delete(id);
+
+                response = new SuccessResponse();
+            }
+            catch (Exception ex)
+            {
+                code = 500;
+                response = new ErrorResponse(ex.Message);
+            }
+            return StatusCode(code, response);
+        }
+        #endregion
+
 
     } // end of controller, don't put anything here.
 } // end of namespace, don't put anything here.
