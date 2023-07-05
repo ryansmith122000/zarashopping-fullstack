@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ZaraShopping.Dtos;
 using ZaraShopping.Interfaces;
 using ZaraShopping.Responses;
@@ -22,35 +23,16 @@ namespace ZaraShopping.Controllers
 
         #region - Post OK -
         [HttpPost("add")]
-        public ActionResult<ItemResponse<int>> CreateUser(UserAddRequest model)
+        public ActionResult<ItemResponse<int>> Create(UserAddRequest model)
         {
-            ActionResult<ItemResponse<int>> result = null;
+            ObjectResult result = null;
 
             try
             {
+                int id = _service.CreateUser(model);
+                ItemResponse<int> response = new ItemResponse<int>() { Item = id };
 
-                if (!DateFormatValidator.IsValidDateFormat(model.DateOfBirth))
-                {
-                    string errorMessage = "Please enter a date in the correct format: MM/DD/YYYY, DD/MM/YYYY, or YYYY/MM/DD";
-                    result = BadRequest(errorMessage);
-                }
-                else if (model.RoleId == 0)
-                {
-                    string errorMessage = "Please choose an appropriate role.";
-                    result = BadRequest(errorMessage);
-                }
-                else
-                {
-                    string salt = BCrypt.Net.BCrypt.GenerateSalt();
-                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
-                    model.Password = hashedPassword;
-
-                    int id = _service.CreateUser(model);
-                    ItemResponse<int> response = new() { Item = id };
-
-                    result = Created201(response);
-                }
-
+                result = Created201(response);
             }
             catch (Exception ex)
             {
@@ -59,7 +41,6 @@ namespace ZaraShopping.Controllers
 
                 result = StatusCode(500, response);
             }
-
             return result;
         }
         #endregion
@@ -129,8 +110,8 @@ namespace ZaraShopping.Controllers
         #endregion
 
         #region - Update OK -
-        [HttpPut("update")]
-        public ActionResult<SuccessResponse> Update(UserUpdateRequest model)
+        [HttpPut("update/{id:int}")]
+        public ActionResult<SuccessResponse> Update(int id, UserUpdateRequest model)
         {
             int code = 200;
             BaseResponse response = null;
@@ -142,7 +123,7 @@ namespace ZaraShopping.Controllers
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
                 model.Password = hashedPassword;
 
-                _service.UpdateUser(model);
+                _service.UpdateUser(id, model);
 
                 response = new SuccessResponse();
             }
@@ -179,6 +160,7 @@ namespace ZaraShopping.Controllers
             return StatusCode(code, response);
         }
         #endregion
+
 
 
     } // end of controller, don't put anything here.

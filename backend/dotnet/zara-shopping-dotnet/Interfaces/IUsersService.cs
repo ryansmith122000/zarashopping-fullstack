@@ -10,6 +10,6 @@ namespace ZaraShopping.Interfaces
         void Delete(int id);
         List<Users> GetAll();
         ItemResponse<Users> GetById(int id);
-        void UpdateUser(UserUpdateRequest model);
+        void UpdateUser(int id, UserUpdateRequest model);
     }
 }
