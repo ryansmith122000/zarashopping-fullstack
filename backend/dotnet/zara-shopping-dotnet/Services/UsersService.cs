@@ -15,54 +15,52 @@ namespace ZaraShopping.Services
         {
             this.connectionString = connectionString; // assigns the connectionString parameter to the readonly field
         }
-
-
-        #region - Update Not OK -
-        public void UpdateUser(UserUpdateRequest model)
+        #region - Add OK -
+        public int CreateUser(UserAddRequest model)
         {
-            using SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
+            int id = 0;
 
-            using SqlCommand command = sqlConnection.CreateCommand();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
 
-            command.CommandType = CommandType.StoredProcedure;
-            command.CommandText = "[dbo].[Users_Update]";
+                using (SqlCommand command = new SqlCommand("[dbo].[Users_Add]", sqlConnection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
 
-            UpdateCommonParams(model, command.Parameters);
+                    AddCommonParams(model, command.Parameters);
 
-/*            SqlParameter idParameter = new SqlParameter("@Id", SqlDbType.Int);
+                    SqlParameter idParameter = new SqlParameter("@Id", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(idParameter);
 
-            idParameter.Value = model.Id;*/
-            command.Parameters.AddWithValue("@Id", model.Id);
+                    command.ExecuteNonQuery();
 
+                    if (idParameter.Value != DBNull.Value && int.TryParse(idParameter.Value.ToString(), out int parsedId))
+                    {
+                        id = parsedId;
+                    }
+                }
+            }
 
-            command.ExecuteNonQuery();
-
-            sqlConnection.Close();
+            return id;
         }
 
         #endregion
 
-        #region - Add OK -
-        public int CreateUser(UserAddRequest model)
-        {
-            using SqlConnection sqlConnection = new(connectionString); // creating a SQL connection
-            sqlConnection.Open(); // opening the SQL connection
+        #region - Log In Not OK -
 
+/*        public ItemResponse<UserLogin> Login(string username, string email, string password)
+        {
+            using SqlConnection sqlConnection = new(connectionString);
+            sqlConnection.Open();
             using SqlCommand command = sqlConnection.CreateCommand();
 
             command.CommandType = CommandType.StoredProcedure;
-            command.CommandText = "[dbo].[Users_Add]";
-
-            AddCommonParams(model, command.Parameters);
-            command.Parameters.Add("@Id", SqlDbType.Int).Direction = ParameterDirection.Output;
-
-            command.ExecuteNonQuery();
-
-            int id = (int)command.Parameters["@Id"].Value;
-
-            return id;
-        }
+            command.CommandText = "[dbo].[User_Login]";
+        }*/
         #endregion
 
         #region - Get All OK -
@@ -116,9 +114,28 @@ namespace ZaraShopping.Services
         }
         #endregion
 
+        #region - Update OK -
+        public void UpdateUser(int id, UserUpdateRequest model)
+        {
+            model.Id = id;
 
+            using SqlConnection sqlConnection = new SqlConnection(connectionString);
+            sqlConnection.Open();
 
-        #region - Delete Not OK -
+            using SqlCommand command = sqlConnection.CreateCommand();
+
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "[dbo].[Users_Update]";
+
+            AddCommonParams(model, command.Parameters);
+
+            command.Parameters.AddWithValue("@Id", model.Id);
+
+            command.ExecuteNonQuery();
+        }
+        #endregion
+
+        #region - Delete OK -
 
         public void Delete(int id)
         {
@@ -144,80 +161,37 @@ namespace ZaraShopping.Services
 
             int startingIndex = 0;
 
-            aUser.Id = reader.IsDBNull(startingIndex) ? 0 : reader.GetInt32(startingIndex++);
-            aUser.Name = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.Email = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.Password = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.ProfilePicture = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.Gender = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.RoleName = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-
-            // Check for null value before assigning to IsDeleted
-            if (!reader.IsDBNull(startingIndex))
-            {
-                aUser.IsDeleted = reader.GetBoolean(startingIndex);
-            }
-            startingIndex++; // Move to the next index
-
-            aUser.Street = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.LineTwo = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.City = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.State = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.ZipCode = reader.IsDBNull(startingIndex) ? 0 : reader.GetInt32(startingIndex++);
-            aUser.Country = reader.IsDBNull(startingIndex) ? null : reader.GetString(startingIndex++);
-            aUser.DateOfBirth = reader.IsDBNull(startingIndex) ? DateTime.MinValue : reader.GetDateTime(startingIndex++);
-
-
-
-
+            aUser.Id = reader.GetInt32(startingIndex++);
+            aUser.UserName = reader.GetString(startingIndex++);
+            aUser.FirstName = reader.GetString(startingIndex++);
+            aUser.MiddleName = reader.GetString(startingIndex++);
+            aUser.LastName = reader.GetString(startingIndex++);
+            aUser.Email = reader.GetString(startingIndex++);
+            aUser.Password = reader.GetString(startingIndex++);
+            aUser.ProfilePicture = reader.GetString(startingIndex++);
+            aUser.DateRegistered = reader.GetDateTime(startingIndex++);
+            aUser.Age = reader.GetInt32(startingIndex++);
+            aUser.RoleId = reader.GetInt32(startingIndex++);
+            aUser.IsDeleted = reader.GetBoolean(startingIndex++);
 
             return aUser;
         }
-
-
-
-
-
-
-
-
         #endregion
 
-        #region - AddCommonParams - OK - 
+        #region - Add Params - OK - 
         private static void AddCommonParams(UserAddRequest model, SqlParameterCollection col)
         {
-            col.AddWithValue("@Name", model.Name);
+            col.AddWithValue("@UserName", model.UserName);
+            col.AddWithValue("@FirstName", model.FirstName);
+            col.AddWithValue("@MiddleName", model.MiddleName);
+            col.AddWithValue("LastName", model.LastName);
             col.AddWithValue("@Email", model.Email);
             col.AddWithValue("@Password", model.Password);
             col.AddWithValue("@ProfilePicture", model.ProfilePicture);
-            col.AddWithValue("@DateOfBirth", model.DateOfBirth); // this needs to be filled with a certain format or else SQL goes nuts
-            col.AddWithValue("@Gender", model.Gender);
-            col.AddWithValue("@Street", model.Street);
-            col.AddWithValue("@LineTwo", model.LineTwo);
-            col.AddWithValue("@City", model.City);
-            col.AddWithValue("@State", model.State);
-            col.AddWithValue("@ZipCode", model.ZipCode);
-            col.AddWithValue("@Country", model.Country);
+            col.AddWithValue("@Age", model.Age);
             col.AddWithValue("@RoleId", model.RoleId);
-            col.AddWithValue("@CreatedBy", model.CreatedBy);
         }
         #endregion
-
-        private static void UpdateCommonParams(UserUpdateRequest model, SqlParameterCollection col)
-        {
-            col.AddWithValue("@Name", model.Name);
-            col.AddWithValue("@Email", model.Email);
-            col.AddWithValue("@Password", model.Password);
-            col.AddWithValue("@ProfilePicture", model.ProfilePicture);
-            col.AddWithValue("@DateOfBirth", model.DateOfBirth); // this needs to be filled with a certain format or else SQL goes nuts
-            col.AddWithValue("@Gender", model.Gender);
-            col.AddWithValue("@Street", model.Street);
-            col.AddWithValue("@LineTwo", model.LineTwo);
-            col.AddWithValue("@City", model.City);
-            col.AddWithValue("@State", model.State);
-            col.AddWithValue("@ZipCode", model.ZipCode);
-            col.AddWithValue("@Country", model.Country);
-        }
     }
 
     /*    To implement a login functionality in C#, you can follow these general steps:

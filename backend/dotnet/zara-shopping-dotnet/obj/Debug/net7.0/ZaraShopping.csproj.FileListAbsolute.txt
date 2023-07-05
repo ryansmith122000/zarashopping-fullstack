@@ -510,3 +510,12 @@ C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shoppi
 C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\obj\Debug\net7.0\ZaraShopping.pdb
 C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\obj\Debug\net7.0\ZaraShopping.genruntimeconfig.cache
 C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\obj\Debug\net7.0\ref\ZaraShopping.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.AspNetCore.Authorization.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.AspNetCore.Metadata.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.Extensions.Identity.Stores.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\SF.Code\Projects\full-stack-projects\zara-shopping\backend\dotnet\zara-shopping-dotnet\bin\Debug\net7.0\Microsoft.Extensions.Options.dll

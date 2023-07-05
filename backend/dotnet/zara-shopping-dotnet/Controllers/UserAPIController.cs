@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ZaraShopping.Dtos;
 using ZaraShopping.Interfaces;
 using ZaraShopping.Responses;
@@ -20,68 +21,18 @@ namespace ZaraShopping.Controllers
             _logger = logger;
         }
 
-        #region - Update Not OK -
-        [HttpPut]
-        public ActionResult<SuccessResponse> Update(UserUpdateRequest model)
-        {
-            int code = 200;
-            BaseResponse response = null;
-
-            try
-            {
-
-                string salt = BCrypt.Net.BCrypt.GenerateSalt();
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
-                model.Password = hashedPassword;
-
-                _service.UpdateUser(model);
-
-                response = new SuccessResponse();
-            }
-
-            catch (Exception ex)
-            {
-                code = 500;
-                response = new ErrorResponse(ex.Message);
-            }
-
-            return StatusCode(code, response);
-        }
-
-        #endregion
-
         #region - Post OK -
-
-        [HttpPost]
-        public ActionResult<ItemResponse<int>> CreateUser(UserAddRequest model)
+        [HttpPost("add")]
+        public ActionResult<ItemResponse<int>> Create(UserAddRequest model)
         {
-            ActionResult<ItemResponse<int>> result = null;
+            ObjectResult result = null;
 
             try
             {
+                int id = _service.CreateUser(model);
+                ItemResponse<int> response = new ItemResponse<int>() { Item = id };
 
-                if (!DateFormatValidator.IsValidDateFormat(model.DateOfBirth))
-                {
-                    string errorMessage = "Please enter a date in the correct format: MM/DD/YYYY, DD/MM/YYYY, or YYYY/MM/DD";
-                    result = BadRequest(errorMessage);
-                }
-                else if (model.RoleId == 0)
-                {
-                    string errorMessage = "Please choose an appropriate role.";
-                    result = BadRequest(errorMessage);
-                }
-                else
-                {
-                    string salt = BCrypt.Net.BCrypt.GenerateSalt();
-                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
-                    model.Password = hashedPassword;
-
-                    int id = _service.CreateUser(model);
-                    ItemResponse<int> response = new() { Item = id };
-
-                    result = Created201(response);
-                }
-
+                result = Created201(response);
             }
             catch (Exception ex)
             {
@@ -90,36 +41,12 @@ namespace ZaraShopping.Controllers
 
                 result = StatusCode(500, response);
             }
-
             return result;
         }
         #endregion
 
-        #region - Delete OK -
-        [HttpDelete("{id:int}")]
-        public ActionResult<SuccessResponse> DeleteById(int id)
-        {
-            int code = 200;
-            BaseResponse response = null;
-
-            try
-            {
-                _service.Delete(id);
-
-                response = new SuccessResponse();
-            }
-            catch (Exception ex)
-            {
-                code = 500;
-                response = new ErrorResponse(ex.Message);
-            }
-            return StatusCode(code, response);
-        }
-        #endregion
-
         #region - Get All OK -
-
-        [HttpGet("all")]
+        [HttpGet("getall")]
         public ActionResult<ItemResponse<Users>> GetAll()
         {
             int iCode = 200;
@@ -150,9 +77,8 @@ namespace ZaraShopping.Controllers
         }
         #endregion
 
-        #region - Get By Id Not OK -
-
-        [HttpGet("{id:int}")]
+        #region - Get By Id OK -
+        [HttpGet("getbyid/{id:int}")]
 
         public ActionResult<ItemResponse<Users>> GetById(int id)
         {
@@ -182,6 +108,60 @@ namespace ZaraShopping.Controllers
             return StatusCode(iCode, response);
         }
         #endregion
+
+        #region - Update OK -
+        [HttpPut("update/{id:int}")]
+        public ActionResult<SuccessResponse> Update(int id, UserUpdateRequest model)
+        {
+            int code = 200;
+            BaseResponse response = null;
+
+            try
+            {
+
+                string salt = BCrypt.Net.BCrypt.GenerateSalt();
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
+                model.Password = hashedPassword;
+
+                _service.UpdateUser(id, model);
+
+                response = new SuccessResponse();
+            }
+
+            catch (Exception ex)
+            {
+                code = 500;
+                response = new ErrorResponse(ex.Message);
+            }
+
+            return StatusCode(code, response);
+        }
+
+        #endregion
+
+        #region - Delete OK -
+        [HttpDelete("delete/{id:int}")]
+        public ActionResult<SuccessResponse> DeleteById(int id)
+        {
+            int code = 200;
+            BaseResponse response = null;
+
+            try
+            {
+                _service.Delete(id);
+
+                response = new SuccessResponse();
+            }
+            catch (Exception ex)
+            {
+                code = 500;
+                response = new ErrorResponse(ex.Message);
+            }
+            return StatusCode(code, response);
+        }
+        #endregion
+
+
 
     } // end of controller, don't put anything here.
 } // end of namespace, don't put anything here.
